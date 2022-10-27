@@ -116,6 +116,7 @@ button {
 
 .pop-up__message {
   display: block;
+  margin: 16px;
   font-size: 38px;
 }
 
