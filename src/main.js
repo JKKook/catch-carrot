@@ -26,6 +26,13 @@ const resultMsg = {
   stop: "MORE TRY❓",
 };
 
+// audio variables
+const carrotSound = new Audio("./sound/carrot_pull.mp3");
+const alertSound = new Audio("./sound/alert.wav");
+const bgSound = new Audio("./sound/bg.mp3");
+const bugSound = new Audio("./sound/bug_pull.mp3");
+const winSound = new Audio("./sound/game_win.mp3");
+
 // handle Btn
 gameBtn.addEventListener("click", () => {
   if (started) stopGame();
@@ -41,21 +48,29 @@ function startGame() {
   started = true;
   initGame();
   startTimer();
+  playSound(bgSound);
 }
 function stopGame() {
   started = false;
   stopTimer();
   showPopupMsg(resultMsg.stop);
+  playSound(alertSound);
+  bgSound.pause();
 }
 function finishGame(win) {
   started = false;
+  if (win) {
+    playSound(winSound);
+  } else {
+    playSound(bugSound);
+  }
   stopTimer();
   showPopupMsg(win ? resultMsg.win : resultMsg.lose);
 }
 
 function initGame() {
-  //   score = 0;
-  //   gameField.innerHTML = "";
+  score = 0;
+  gameField.innerHTML = "";
   gameScore.innerText = CARROT_COUNT;
   addItem("carrot", CARROT_COUNT, "/img/carrot.png");
   addItem("bug", CARROT_COUNT, "/img/bug.png");
@@ -131,6 +146,7 @@ function onFieldScore(e) {
   if (target.matches(".carrot")) {
     target.remove();
     score++;
+    playSound(carrotSound);
     updateScore();
     if (score === CARROT_COUNT) {
       finishGame(true);
@@ -142,4 +158,14 @@ function onFieldScore(e) {
 
 function updateScore() {
   gameScore.innerText = CARROT_COUNT - score;
+}
+
+// handle sound
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function stopSound(sound) {
+  sound.pause();
 }
